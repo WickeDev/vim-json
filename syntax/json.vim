@@ -97,6 +97,12 @@ syn keyword  jsonNull      null
 syn region  jsonFold matchgroup=jsonBraces start="{" end=/}\(\_s\+\ze\("\|{\)\)\@!/ transparent fold
 syn region  jsonFold matchgroup=jsonBraces start="\[" end=/]\(\_s\+\ze"\)\@!/ transparent fold
 
+" Syntax: Comment
+if (exists("g:vim_json_allow_comment") || g:vim_json_json_allow==1)
+    syn match   jsonComment  "//.*"
+    syn match   jsonComment  "\(/\*\)\(.*\)\(\*/\)"
+endif
+
 " Define the default highlighting.
 if version >= 508 || !exists("did_json_syn_inits")
   hi def link jsonPadding		Operator
@@ -110,15 +116,22 @@ if version >= 508 || !exists("did_json_syn_inits")
   hi def link jsonKeyword		Label
 
 	if (!exists("g:vim_json_warnings") || g:vim_json_warnings==1)
-		hi def link jsonNumError					Error
-		hi def link jsonCommentError				Error
+		hi def link jsonNumError				  Error
+        if (!exists("g:vim_json_allow_comment") || g:vim_json_allow_comment!=1)
+		    hi def link jsonCommentError		Error
+        endif
 		hi def link jsonSemicolonError			Error
 		hi def link jsonTrailingCommaError		Error
 		hi def link jsonMissingCommaError		Error
-		hi def link jsonStringSQError				Error
-		hi def link jsonNoQuotesError				Error
+		hi def link jsonStringSQError			  Error
+		hi def link jsonNoQuotesError			  Error
 		hi def link jsonTripleQuotesError		Error
   endif
+
+  if (g:vim_json_allow_comment==1)
+    hi def link jsonComment				Comment
+  endif
+
   hi def link jsonQuote			Quote
   hi def link jsonNoise			Noise
 endif
